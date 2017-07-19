@@ -5,4 +5,7 @@
 •	Catch exceptions globally in an application to send emails by simply adding a VM processor. <br/>
 •	Email a notification to emails by dynamically giving subject and content. <br/>
 •	Log integration activities to monitoring app and/or send emails. <br/>
-•	Centrally manage Email addresses for individual application without interrupting operations. <br/>
+•	Centrally manage Email addresses for individual application without interrupting operations. <br/><br/>
+
+--Make yours<br/>
+You may checkout and change the adapters in this repository, and you have to remember to change your handler in mule-email-adapter-handler too. If you do not want make any changes, just distribute mule-email-adapter.jar to other projects. You do not need to deploy this application.
