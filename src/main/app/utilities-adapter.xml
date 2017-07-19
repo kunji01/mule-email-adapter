@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:cluster="http://www.mulesoft.org/schema/mule/ee/cluster" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <!-- context:property-placeholder location="classpath:utilities-adapter-${env.name}.properties"/ -->
+    <!--  global-property name="http.request.host1" value="0.0.0.0" doc:name="Global Property"/>
+    <global-property name="http.request.port1" value="8081" doc:name="Global Property"/ -->
+    <http:request-config name="utilitiesAdapter_HTTP_Request" host="0.0.0.0" port="8383" doc:name="HTTP Request Configuration"/>
+    <vm:connector name="utilitiesAdapter_VM" validateConnections="true" doc:name="VM"/>
+    <catch-exception-strategy name="Adapter_Exception_Strategy">
+        <logger message="Cannot call the utilities-handler. please make sure the companion project mule-email-adapter-handler is deployed." level="ERROR" doc:name="Logger"/>
+    </catch-exception-strategy>
+     
+    <flow name="/utilities/email/exception">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="/utilities/email/exception" doc:name="/utilities/email/exception" connector-ref="utilitiesAdapter_VM"/>
+        <set-property propertyName="flowname" value="#[exception.event.flowConstruct.name]" doc:name="set_Property flowname"/>
+        
+        <set-variable variableName="pos" value="#[(app.workDir==empty?'':app.workDir).lastIndexOf('/')]" doc:name="pos"/>
+        <set-property propertyName="appname" value="#[(flowVars.pos &gt; 0)?app.workDir.substring(pos+1):'']" doc:name="appname"/>
+        
+        <set-property propertyName="exception" value="#['' + exception.getMessage()]" doc:name="Property - exception"/>
+        <!-- parse-template location="src/main/resources/exception-emailtemplate.txt" doc:name="Parse exception email Template"/ -->
+        <http:request config-ref="utilitiesAdapter_HTTP_Request" path="/utilities/email/exception" method="GET" sendBodyMode="ALWAYS" doc:name="/utilities/email/exception"/>
+        <exception-strategy ref="Adapter_Exception_Strategy" doc:name="Reference Exception Strategy"/>
+
+    </flow>
+    <flow name="/utilities/email/message">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="/utilities/email/message" doc:name="/utilities/email/message" connector-ref="utilitiesAdapter_VM"/>
+        <set-variable variableName="pos" value="#[(app.workDir==empty?'':app.workDir).lastIndexOf('/')]" doc:name="pos"/>
+		
+		<set-property propertyName="flowname" value="#[(flowVars.pos &gt; 0)?app.workDir.substring(pos+1):'']" doc:name="Property flowname"/>
+        <set-property propertyName="appname" value="#[(flowVars.pos &gt; 0)?app.workDir.substring(pos+1):'']" doc:name="appname"/>
+        <set-payload value="#[message]" doc:name="Set mule message to Payload"/>
+
+        <http:request config-ref="utilitiesAdapter_HTTP_Request" path="/utilities/email/message" method="PUT" doc:name="/utilities/email/message"/>
+        <exception-strategy ref="Adapter_Exception_Strategy" doc:name="Reference Exception Strategy"/>
+
+    </flow>
+    <flow name="/utilities/email/payload">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="/utilities/email/payload" doc:name="/utilities/email/payload" connector-ref="utilitiesAdapter_VM"/>
+        <set-variable variableName="pos" value="#[(app.workDir==empty?'':app.workDir).lastIndexOf('/')]" doc:name="post"/>
+
+		<set-property propertyName="flowname" value="#[(flowVars.pos &gt; 0)?app.workDir.substring(pos+1):'']" doc:name="Property flowname"/>
+        <set-property propertyName="appname" value="#[(flowVars.pos &gt; 0)?app.workDir.substring(pos+1):'']" doc:name="appname"/>
+        
+        <http:request config-ref="utilitiesAdapter_HTTP_Request" path="/utilities/email/payload" method="PUT" doc:name="/utilities/email/payload"/>
+        <exception-strategy ref="Adapter_Exception_Strategy" doc:name="Reference Exception Strategy"/>
+
+    </flow>
+    <flow name="/utilities/email/log">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="/utilities/email/log" doc:name="/utilities/email/payload" connector-ref="utilitiesAdapter_VM"/>
+        <set-variable variableName="pos" value="#[(app.workDir==empty?'':app.workDir).lastIndexOf('/')]" doc:name="pos"/>
+
+		<set-property propertyName="flowname" value="#[(flowVars.pos &gt; 0)?app.workDir.substring(pos+1):'']" doc:name="Property flowname"/>
+        <set-property propertyName="appname" value="#[(flowVars.pos &gt; 0)?app.workDir.substring(pos+1):'']" doc:name="appname"/>
+        
+        <http:request config-ref="utilitiesAdapter_HTTP_Request" path="/utilities/email/log" method="PUT" doc:name="/utilities/email/log"/>
+        <exception-strategy ref="Adapter_Exception_Strategy" doc:name="Reference Exception Strategy"/>
+
+    </flow>
+    <flow name="/utilities/log">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="/utilities/log" doc:name="/utilities/email/payload" connector-ref="utilitiesAdapter_VM"/>
+        <set-variable variableName="pos" value="#[(app.workDir==empty?'':app.workDir).lastIndexOf('/')]" doc:name="pos"/>
+
+		<set-property propertyName="flowname" value="#[(flowVars.pos &gt; 0)?app.workDir.substring(pos+1):'']" doc:name="Property flowname"/>
+        <set-property propertyName="appname" value="#[(flowVars.pos &gt; 0)?app.workDir.substring(pos+1):'']" doc:name="appname"/>
+        
+        <http:request config-ref="utilitiesAdapter_HTTP_Request" path="/utilities/log" method="PUT" doc:name="/utilities/log"/>
+        <exception-strategy ref="Adapter_Exception_Strategy" doc:name="Reference Exception Strategy"/>
+
+    </flow>
+    <flow name="/utilities/email/note">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="/utilities/email/note" doc:name="/utilities/email/note" connector-ref="utilitiesAdapter_VM"/>
+
+        <choice doc:name="Choice content">
+            <when expression="message.inboundProperties.'content' == empty">
+                <object-to-string-transformer doc:name="Object to String"/>
+
+            </when>
+            <otherwise>
+                <set-payload value="#[message.inboundProperties.'content']" doc:name="Set content to Payload"/>
+            </otherwise>
+        </choice>
+        <set-variable variableName="pos" value="#[(app.workDir==empty?'':app.workDir).lastIndexOf('/')]" doc:name="pos"/>
+        
+        <set-property propertyName="flowname" value="#[(flowVars.pos &gt; 0)?app.workDir.substring(pos+1):'']" doc:name="Property flowname"/>
+        <set-property propertyName="appname" value="#[(flowVars.pos &gt; 0)?app.workDir.substring(pos+1):'']" doc:name="appname"/>
+        <choice doc:name="Choice supject">
+            <when expression="message.inboundProperties.'subject'==empty">
+                <set-property propertyName="subject" value="#[message.outboundProperties.appname]" doc:name="subject"/>
+            </when>
+            <otherwise>
+                <set-property propertyName="subject" value="#[message.inboundProperties.'subject']" doc:name="subjectto property"/>
+            </otherwise>
+        </choice>
+        
+        <http:request config-ref="utilitiesAdapter_HTTP_Request" path="/utilities/email/note" method="PUT" doc:name="/utilities/email/note"/>
+        <exception-strategy ref="Adapter_Exception_Strategy" doc:name="Reference Exception Strategy"/>
+    </flow>
+</mule>
