@@ -8,4 +8,4 @@
 •	Centrally manage Email addresses for individual application without interrupting operations. <br/><br/>
 
 --Make it yours<br/>
-You may checkout and change the adapters in this repository, and you have to remember to change your handler in mule-email-adapter-handler too. If you do not make any changes, just distribute mule-email-adapter.jar in target folder to other projects. You do not need to deploy this application. Check the repository mule-email-adapter-handler for detail.
+You may checkout and change the adapters in this repository, and you have to remember to change your handler in mule-email-adapter-handler too. If you do not make any changes, just distribute mule-email-adapter.jar in target folder to other projects. You do not need to deploy this application, you have to deploy mule-email-adapter-handler to where you host the other projects. Check the repository mule-email-adapter-handler for detail.
