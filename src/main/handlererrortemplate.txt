@@ -1,3 +1,0 @@
-Cause:	#[exception.getMessage()]
-
-Flow:	#[exception.event.flowConstruct.name]
