@@ -8,7 +8,7 @@
 •	Centrally manage Email addresses for individual application without interrupting operations. <br/><br/>
 
 --This repository contains adapters to connect to handlers in repository mule-email-adapter-handler.
-If you do not want to change or add adapters, you do not need this repository, if just want email in your flow, clone or download repository 
+If you do not want to change or add adapters, you do not need this repository, if you just want email in your flow, clone or download repository 
 mule-email-adapter-handler.<br/><br/>
 
 --Make it yours<br/>
