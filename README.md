@@ -9,7 +9,7 @@
 
 --This repository contains adapters to connect to handlers in repository mule-email-adapter-handler.
 If you do not want to change or add adapters, you do not need this repository, if you just want email in your flow, clone or download repository 
-mule-email-adapter-handler.<br/><br/>
+<a href="https://github.com/kunji01/mule-email-adapter-handler">mule-email-adapter-handler</a>.<br/><br/>
 
 --Make it yours<br/>
-You need to clone or download this project and project mule-email-adapter-handler both to your Anypoint studio to implement adapters and handlers, Change an adapter in this repository, may require to change its respective handler in mule-email-adapter-handler too. If you do not make any changes, just distribute mule-email-adapter.jar in target folder to other projects. You do not need to deploy this application, you have to deploy mule-email-adapter-handler to where you host the other projects. Read the repository mule-email-adapter-handler for detail.
+You need to clone or download this project and project mule-email-adapter-handler both to your Anypoint studio to implement adapters and handlers, Change an adapter in this repository, may require to change its respective handler in mule-email-adapter-handler too. If you do not make any changes, just distribute mule-email-adapter.jar in target folder to other projects. You do not need to deploy this application, you have to deploy mule-email-adapter-handler to where you host the other projects. Read the repository <a href="https://github.com/kunji01/mule-email-adapter-handler">mule-email-adapter-handler</a> for detail.
